@@ -3,17 +3,14 @@ import '../models/recipe.dart';
 
 class RecipeItem extends StatelessWidget {
   final Recipe recipe;
+  final Function openRecipeDetail;
 
-  const RecipeItem(this.recipe, {Key? key}) : super(key: key);
-  
-  void openRecipeDetail (context) {
-    Navigator.pushNamed(context, 'recipe_detail', arguments: {'id': recipe.id});
-  }
-  
+  const RecipeItem(this.recipe,this.openRecipeDetail,{Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => openRecipeDetail(context),
+      onTap: () => openRecipeDetail(),
       child: Card(
           elevation: 4,
           margin: const EdgeInsets.all(10),
@@ -41,8 +38,8 @@ class RecipeItem extends StatelessWidget {
                     child: Container(
                       width: 220,
                       color: Colors.black54,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
                       child: Text(
                         recipe.title,
                         style: const TextStyle(
@@ -57,7 +54,8 @@ class RecipeItem extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -73,7 +71,6 @@ class RecipeItem extends StatelessWidget {
                         Text(recipe.complexity.name.toUpperCase()),
                       ],
                     ),
-
                     Row(
                       children: [
                         const Icon(Icons.attach_money),

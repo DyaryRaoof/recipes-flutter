@@ -3,15 +3,25 @@ import '../dummy_data.dart';
 import '../models/recipe.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
-  const RecipeDetailScreen({Key? key}) : super(key: key);
   static const routeName = 'recipe_detail';
 
-  Widget HeaderText(String text) {
+  List<String> favoriteRecipeIds;
+  Function removeFromFavorites;
+  Function addToFavorites;
+
+  RecipeDetailScreen(
+      {required this.favoriteRecipeIds,
+      required this.removeFromFavorites,
+      required this.addToFavorites,
+      Key? key})
+      : super(key: key);
+
+  Widget headerText(String text) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -50,12 +60,12 @@ class RecipeDetailScreen extends StatelessWidget {
                               child: Text('# ${index + 1}'),
                             ),
                           ),
-                           SizedBox(
-                            width: 200,
+                          SizedBox(
+                              width: 200,
                               child: Text(
-                            recipe.steps[index],
-                            softWrap: true,
-                          )),
+                                recipe.steps[index],
+                                softWrap: true,
+                              )),
                         ],
                       ),
                       const Divider(),
@@ -80,16 +90,38 @@ class RecipeDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              if(!favoriteRecipeIds.contains(recipe.id)){
+                addToFavorites(recipe.id);
+              }else{
+                removeFromFavorites(recipe.id);
+              }
+            },
+            icon:  Icon(
+              Icons.star,
+              color: favoriteRecipeIds.contains(recipe.id) ? Theme.of(context).accentColor: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.network(recipe.imageUrl),
-          HeaderText('Ingredients'),
+          headerText('Ingredients'),
           scrollableContainer(context, recipe, true),
-          HeaderText('Steps'),
+          headerText('Steps'),
           scrollableContainer(context, recipe, false),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.delete,
+          color: Theme.of(context).primaryColor,
+        ),
+        onPressed: () => {Navigator.pop(context, recipe.id)},
       ),
     );
   }
